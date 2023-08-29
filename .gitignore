@@ -1,0 +1,11 @@
+# Python stuff:
+/env
+
+# Django stuff:
+*.log
+local_settings.py
+
+# Mac stuff:
+.DS_Store
+.AppleDouble
+.LSOverride
