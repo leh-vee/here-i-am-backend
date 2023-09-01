@@ -12,8 +12,8 @@ def intersections_index(request):
     return JsonResponse(geojson, safe=False)
 
 def sefirot(request):
-    intersection_ids = [13465772, 13465233, 13464696, 13465037, 13464439, 13464314, 13464031, 13463848, 13463429, 14172266]
-    default_tree_intersections = Intersection.objects.filter(id__in=intersection_ids)
+    intersection_ids = [13465772, 14172266, 13463429, 13463848, 13464031, 13464314, 13464439, 13465037, 13464696, 13465233]
+    default_tree_intersections = Intersection.objects.sefirot_ordered_by_intersection_id_index(intersection_ids)
     geojson = serialize(
         "geojson", default_tree_intersections, geometry_field="geom", 
         fields=["id", "description"]
