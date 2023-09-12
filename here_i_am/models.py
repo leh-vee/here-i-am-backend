@@ -14,14 +14,14 @@ class StreetEdge(models.Model):
         db_table = 'street_edge'
 
 class StreetNodeQuerySet(models.QuerySet):
-    def sefirot_ordered_by_street_node_id_index(self, street_node_ids):
+    def ordered_by_ids(self, ids):
         when_clauses = []
-        for index, street_node_id in enumerate(street_node_ids):
-            when_clauses.append(When(id=street_node_id, then=Value(index)))
+        for i, id in enumerate(ids):
+            when_clauses.append(When(id=id, then=Value(i)))
 
         order_statement = Case(*when_clauses)
 
-        return self.filter(id__in=street_node_ids).alias(order=order_statement).order_by("order")
+        return self.filter(id__in=ids).alias(order=order_statement).order_by("order")
 
 class StreetNode(models.Model):
     geom = models.PointField()

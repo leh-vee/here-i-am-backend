@@ -4,34 +4,29 @@ from django.core.serializers import serialize
 from django.http import JsonResponse
 from django.shortcuts import render
 
-def intersections_index(request):
+def street_nodes_index(request):
     geojson = serialize(
-        "geojson", StreetNode.objects.all(), geometry_field="geom", 
-        fields=["id", "description"]
+        "geojson", StreetNode.objects.all(), geometry_field="geom", fields=["n_street_edges"]
     )
     return JsonResponse(geojson, safe=False)
 
-def sefirot(request):
-    intersection_ids = [13465772, 14172266, 13463429, 13463848, 13464031, 13464314, 13464439, 13465037, 13464696, 13465233]
-    default_tree_intersections = StreetNode.objects.sefirot_ordered_by_intersection_id_index(intersection_ids)
+def tree_nodes(request):
+    node_ids = [13465772, 14172266, 13463429, 13463848, 13464031, 13464314, 13464439, 13465037, 13464696, 13465233]
+    nodes = StreetNode.objects.ordered_by_ids(node_ids)
     geojson = serialize(
-        "geojson", default_tree_intersections, geometry_field="geom", 
-        fields=["id", "description"]
+        "geojson", nodes, geometry_field="geom", fields=["n_street_edges"]
     )
     return JsonResponse(geojson, safe=False)
 
-def street_segments_index(request):
+def street_edges_index(request):
     geojson = serialize(
-        "geojson", StreetEdge.objects.all(), geometry_field="geom", 
-        fields=["id", "description"]
+        "geojson", StreetEdge.objects.all(), geometry_field="geom", fields=["description"]
     )
     return JsonResponse(geojson, safe=False)
 
-def pathways(request, intersection_id, meters):
-    intersection = StreetNode.objects.get(id=intersection_id)
-    ss = StreetEdge.objects.filter(
-        geom__distance_lte=(intersection.geom, D(m=meters))
-    )
-    geojson = serialize("geojson", ss, geometry_field="geom", fields=["id", "description"])
+def local_edges(request, node_id, meters):
+    node = StreetNode.objects.get(id=node_id)
+    edges = StreetEdge.objects.filter(geom__distance_lte=(node.geom, D(m=meters)))
+    geojson = serialize("geojson", edges, geometry_field="geom", fields=["description"])
     return JsonResponse(geojson, safe=False)
 

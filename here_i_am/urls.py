@@ -3,8 +3,9 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("sefirot/", views.sefirot, name="sefirot"),
-    path("pathways/<int:intersection_id>/<int:meters>", views.pathways, name="pathways"),
-    path("intersections/", views.intersections_index, name="intersections"),
-    path("street-segments/", views.street_segments_index, name="street_segments"),
+    path("street-nodes/", views.street_nodes_index, name="nodes"),
+    path("street-nodes/tree-of-life/", views.tree_nodes, name="default_tree_nodes"),
+    path("street-nodes/tree-of-life/<int:ground_zero_coords>", views.tree_nodes, name="tree_nodes"),
+    path("street-edges/", views.street_edges_index, name="edges"),
+    path("street-edges/<int:node_id>/<int:meters>", views.local_edges, name="local_edges"),
 ]
