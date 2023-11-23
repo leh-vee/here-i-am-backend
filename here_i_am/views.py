@@ -1,6 +1,6 @@
 from here_i_am.models import StreetNode, StreetEdge 
 from django.contrib.gis.measure import D
-from django.contrib.gis.geos import Polygon
+from django.contrib.gis.geos import Polygon, Point
 from django.core.serializers import serialize
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -27,9 +27,13 @@ def street_edges_index(request):
     )
     return JsonResponse(geojson, safe=False)
 
-def local_edges(request, node_id, meters):
-    node = StreetNode.objects.get(id=node_id)
-    edges = StreetEdge.objects.filter(geom__distance_lte=(node.geom, D(m=meters)))
+@csrf_exempt
+def within_radius(request):
+    request_params = json.loads(request.body.decode('utf-8'))
+    centriod_coords = request_params['centroidCoords']
+    radius_km = request_params['radiusKm']
+    centroid_point = Point(centriod_coords)
+    edges = StreetEdge.objects.filter(geom__distance_lte=(centroid_point, D(km=radius_km)))
     geojson = serialize("geojson", edges, geometry_field="geom", fields=["description"])
     return JsonResponse(geojson, safe=False)
 
