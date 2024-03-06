@@ -3,6 +3,7 @@
 
 # Django stuff:
 *.log
+*.pyc
 local_settings.py
 
 # Mac stuff:
