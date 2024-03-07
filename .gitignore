@@ -3,8 +3,12 @@
 
 # Django stuff:
 *.log
+*.pot
 *.pyc
 local_settings.py
+*/*/*/__pycache__/
+*/*/__pycache__/
+*/__pycache__/
 
 # Mac stuff:
 .DS_Store
