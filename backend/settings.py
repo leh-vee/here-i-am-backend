@@ -87,11 +87,11 @@ if DEVELOPMENT_MODE is True:
     DATABASES = {
         'default': {
             'ENGINE': 'django.contrib.gis.db.backends.postgis',
-            'NAME': 'postgres',
-            'USER': 'leonl',
-            'PASSWORD': '',
-            'HOST': '127.0.0.1',
-            'PORT': '5432',
+            'NAME': os.getenv('DB_NAME', 'postgres'),
+            'USER': os.getenv('DB_USER', 'leonl'),
+            'PASSWORD': os.getenv('DB_PASSWORD', ''),
+            'HOST': os.getenv('DB_HOST', '127.0.0.1'),
+            'PORT': os.getenv('DB_PORT', '5432'),
         }
     }
 elif len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
