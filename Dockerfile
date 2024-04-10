@@ -11,7 +11,7 @@ RUN pip install --break-system-packages -r requirements.txt
 COPY . /app
 
 # Expose the default Django port
-EXPOSE 8000
+EXPOSE 8080
 
 # start server
-CMD ["gunicorn", "--bind", ":8000", "--workers", "1", "backend.wsgi:application"]
+CMD ["gunicorn", "--bind", ":8080", "--workers", "1", "backend.wsgi:application"]
