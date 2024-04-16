@@ -1,4 +1,5 @@
 .env
+.dockerEnv
  
 # Python stuff:
 /env
