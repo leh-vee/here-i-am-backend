@@ -3,7 +3,7 @@ from django.contrib.gis.measure import D
 from django.contrib.gis.geos import Polygon, Point
 from django.core.serializers import serialize
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 import json
 
@@ -20,6 +20,16 @@ def tree_nodes(request):
         "geojson", nodes, geometry_field="geom", fields=["n_street_edges"]
     )
     return JsonResponse(geojson, safe=False)
+
+def street_node_detail(request, node_id):
+    """
+    Returns the coordinates of a specific street node by ID.
+    """
+    node = get_object_or_404(StreetNode, id=node_id)
+    
+    coordinates = [node.geom.x, node.geom.y]
+    
+    return JsonResponse(coordinates, safe=False)
 
 def street_edges_index(request):
     geojson = serialize(
