@@ -60,6 +60,19 @@ def area_edges(request):
     )
     return JsonResponse(geojson, safe=False)
 
+def random_street_nodes(request, n_nodes):
+    """
+    Returns GeoJSON for n random street nodes.
+    """
+    # Limit the number of nodes to prevent excessive queries
+    max_nodes = min(n_nodes, 1000)
+    
+    nodes = StreetNode.objects.order_by('?')[:max_nodes]
+    geojson = serialize(
+        "geojson", nodes, geometry_field="geom", fields=["n_street_edges"]
+    )
+    return JsonResponse(geojson, safe=False)
+
 def random_street_node(request):
     node = StreetNode.objects.order_by('?').first()
     
