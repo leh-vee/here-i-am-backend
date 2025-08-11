@@ -60,3 +60,23 @@ def area_edges(request):
     )
     return JsonResponse(geojson, safe=False)
 
+def random_street_node(request):
+    node = StreetNode.objects.order_by('?').first()
+    
+    coordinates = [node.geom.x, node.geom.y]
+    
+    # Return valid GeoJSON Feature
+    geojson_feature = {
+        'type': 'Feature',
+        'geometry': {
+            'type': 'Point',
+            'coordinates': coordinates
+        },
+        'properties': {
+            'id': node.id,
+            'n_street_edges': node.n_street_edges
+        }
+    }
+    
+    return JsonResponse(geojson_feature)
+
