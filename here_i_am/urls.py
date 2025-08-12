@@ -3,10 +3,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("street-node/", views.random_street_node, name="random_street_node"),
-    path("street-nodes/<int:n_nodes>/", views.random_street_nodes, name="random_street_nodes"),
-    path("street-node/coordinates/<int:node_id>/", views.street_node_detail, name="node_detail"),
     path("street-nodes/", views.street_nodes_index, name="nodes"),
+    path("street-nodes/random/<int:n_nodes>/", views.random_street_nodes, name="random_street_nodes"),
     path("street-nodes/tree-of-life/", views.tree_nodes, name="default_tree_nodes"),
     path("street-nodes/tree-of-life/<int:ground_zero_coords>", views.tree_nodes, name="tree_nodes"),
     path("street-edges/", views.street_edges_index, name="edges"),

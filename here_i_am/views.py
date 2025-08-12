@@ -3,7 +3,6 @@ from django.contrib.gis.measure import D
 from django.contrib.gis.geos import Polygon, Point
 from django.core.serializers import serialize
 from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 import json
 
@@ -20,16 +19,6 @@ def tree_nodes(request):
         "geojson", nodes, geometry_field="geom", fields=["n_street_edges"]
     )
     return JsonResponse(geojson, safe=False)
-
-def street_node_detail(request, node_id):
-    """
-    Returns the coordinates of a specific street node by ID.
-    """
-    node = get_object_or_404(StreetNode, id=node_id)
-    
-    coordinates = [node.geom.x, node.geom.y]
-    
-    return JsonResponse(coordinates, safe=False)
 
 def street_edges_index(request):
     geojson = serialize(
@@ -62,34 +51,14 @@ def area_edges(request):
 
 def random_street_nodes(request, n_nodes):
     """
-    Returns GeoJSON for n random street nodes.
+    Returns GeoJSON for n random street nodes with 3 or more street edges.
     """
     # Limit the number of nodes to prevent excessive queries
     max_nodes = min(n_nodes, 1000)
     
-    nodes = StreetNode.objects.order_by('?')[:max_nodes]
+    nodes = StreetNode.objects.filter(n_street_edges__gte=3).order_by('?')[:max_nodes]
     geojson = serialize(
         "geojson", nodes, geometry_field="geom", fields=["n_street_edges"]
     )
     return JsonResponse(geojson, safe=False)
-
-def random_street_node(request):
-    node = StreetNode.objects.order_by('?').first()
-    
-    coordinates = [node.geom.x, node.geom.y]
-    
-    # Return valid GeoJSON Feature
-    geojson_feature = {
-        'type': 'Feature',
-        'geometry': {
-            'type': 'Point',
-            'coordinates': coordinates
-        },
-        'properties': {
-            'id': node.id,
-            'n_street_edges': node.n_street_edges
-        }
-    }
-    
-    return JsonResponse(geojson_feature)
 
