@@ -2,7 +2,7 @@ from here_i_am.models import StreetNode, StreetEdge
 from django.contrib.gis.measure import D
 from django.contrib.gis.geos import Polygon, Point
 from django.core.serializers import serialize
-from django.http import JsonResponse
+from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
@@ -10,7 +10,7 @@ def street_nodes_index(request):
     geojson = serialize(
         "geojson", StreetNode.objects.all(), geometry_field="geom", fields=["n_street_edges"]
     )
-    return JsonResponse(geojson, safe=False)
+    return HttpResponse(geojson, content_type="application/json")
 
 def tree_nodes(request):
     node_ids = [13465772, 14172266, 13463429, 13463848, 13464031, 13464314, 13464439, 13465037, 13464696, 13465233]
@@ -18,13 +18,13 @@ def tree_nodes(request):
     geojson = serialize(
         "geojson", nodes, geometry_field="geom", fields=["n_street_edges"]
     )
-    return JsonResponse(geojson, safe=False)
+    return HttpResponse(geojson, content_type="application/json")
 
 def street_edges_index(request):
     geojson = serialize(
         "geojson", StreetEdge.objects.all(), geometry_field="geom", fields=["description"]
     )
-    return JsonResponse(geojson, safe=False)
+    return HttpResponse(geojson, content_type="application/json")
 
 @csrf_exempt
 def within_radius(request):
@@ -34,7 +34,7 @@ def within_radius(request):
     centroid_point = Point(centriod_coords)
     edges = StreetEdge.objects.filter(geom__distance_lte=(centroid_point, D(km=radius_km)))
     geojson = serialize("geojson", edges, geometry_field="geom", fields=["description"])
-    return JsonResponse(geojson, safe=False)
+    return HttpResponse(geojson, content_type="application/json")
 
 @csrf_exempt
 def area_edges(request):
@@ -47,7 +47,7 @@ def area_edges(request):
             "description", "from_street_node_id", "to_street_node_id"
         ]
     )
-    return JsonResponse(geojson, safe=False)
+    return HttpResponse(geojson, content_type="application/json")
 
 def random_street_nodes(request, n_nodes):
     """
@@ -60,5 +60,4 @@ def random_street_nodes(request, n_nodes):
     geojson = serialize(
         "geojson", nodes, geometry_field="geom", fields=["n_street_edges"]
     )
-    return JsonResponse(geojson, safe=False)
-
+    return HttpResponse(geojson, content_type="application/json")
