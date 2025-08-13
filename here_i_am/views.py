@@ -6,6 +6,14 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
+def street_node(request, id):
+    node = StreetNode.objects.get(pk=id)
+    geojson = serialize(
+        "geojson", [node], geometry_field="geom", fields=["n_street_edges"]
+    )
+    
+    return HttpResponse(geojson, content_type="application/json")
+
 def street_nodes_index(request):
     geojson = serialize(
         "geojson", StreetNode.objects.all(), geometry_field="geom", fields=["n_street_edges"]
