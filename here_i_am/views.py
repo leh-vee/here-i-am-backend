@@ -20,18 +20,24 @@ def street_nodes_index(request):
     )
     return HttpResponse(geojson, content_type="application/json")
 
-def random_street_nodes(request, n_nodes):
+def random_crossroads(request, n_nodes):
     """
     Returns GeoJSON for n random street nodes with 3 or more street edges.
     """
     # Limit the number of nodes to prevent excessive queries
     max_nodes = min(n_nodes, 1000)
     
-    nodes = StreetNode.objects.filter(n_street_edges__gte=3).order_by('?')[:max_nodes]
+    nodes = StreetNode.objects.filter(n_street_edges=4).order_by('?')[:max_nodes]
     geojson = serialize(
         "geojson", nodes, geometry_field="geom", fields=["n_street_edges"]
     )
     return HttpResponse(geojson, content_type="application/json")
+
+    # Nodes with 1 edges: 3710
+    # Nodes with 2 edges: 9600
+    # Nodes with 3 edges: 15611
+    # Nodes with 4 edges: 4713
+    # Nodes with 5 edges: 19
 
 def tree_nodes(request):
     node_ids = [13465772, 14172266, 13463429, 13463848, 13464031, 13464314, 13464439, 13465037, 13464696, 13465233]
