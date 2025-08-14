@@ -6,6 +6,12 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
+def street_nodes_index(request):
+    geojson = serialize(
+        "geojson", StreetNode.objects.all(), geometry_field="geom", fields=["n_street_edges"]
+    )
+    return HttpResponse(geojson, content_type="application/json")
+
 def street_node(request, id):
     node = StreetNode.objects.get(pk=id)
     geojson = serialize(
@@ -14,22 +20,16 @@ def street_node(request, id):
     
     return HttpResponse(geojson, content_type="application/json")
 
-def street_nodes_index(request):
-    geojson = serialize(
-        "geojson", StreetNode.objects.all(), geometry_field="geom", fields=["n_street_edges"]
-    )
-    return HttpResponse(geojson, content_type="application/json")
-
 def random_crossroads(request, n_nodes):
     """
-    Returns GeoJSON for n random street nodes with 3 or more street edges.
+    Returns GeoJSON for n random street nodes with 4 street edges.
     """
     # Limit the number of nodes to prevent excessive queries
     max_nodes = min(n_nodes, 1000)
     
     nodes = StreetNode.objects.filter(n_street_edges=4).order_by('?')[:max_nodes]
     geojson = serialize(
-        "geojson", nodes, geometry_field="geom", fields=["n_street_edges"]
+        "geojson", nodes, geometry_field="geom", fields=[]
     )
     return HttpResponse(geojson, content_type="application/json")
 
